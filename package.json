@@ -1,0 +1,12 @@
+{
+  "name": "publifysystem",
+  "version": "1.0.0",
+  "description": "Publify SaaS - Plataforma de Gestão Meta Ads",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": ["meta-ads", "saas", "publify"],
+  "author": "Raffaell19",
+  "license": "ISC"
+}
