@@ -1358,19 +1358,19 @@
       <div class="agency-meta-group">
         <div class="agency-stat">
           <span class="agency-stat-label">Total Gerido na Agência</span>
-          <span class="agency-stat-val" id="agency-total-spend">R$ 6.238,16</span>
+          <span class="agency-stat-val" id="agency-total-spend">R$ 42,16</span>
         </div>
         <div class="agency-stat">
           <span class="agency-stat-label">Faturamento Gerado Total</span>
-          <span class="agency-stat-val" style="color:var(--color-emerald);" id="agency-total-revenue">R$ 28.702,37</span>
+          <span class="agency-stat-val" style="color:var(--color-emerald);" id="agency-total-revenue">R$ 202,37</span>
         </div>
         <div class="agency-stat">
           <span class="agency-stat-label">ROAS Médio Consolidado</span>
-          <span class="agency-stat-val" style="color:#60a5fa;" id="agency-avg-roas">4.60x</span>
+          <span class="agency-stat-val" style="color:#60a5fa;" id="agency-avg-roas">4.80x</span>
         </div>
         <div class="agency-stat">
           <span class="agency-stat-label">Contas Vinculadas</span>
-          <span class="agency-stat-val" id="agency-client-count">4 Conectadas</span>
+          <span class="agency-stat-val" id="agency-client-count">3 Conectadas</span>
         </div>
       </div>
 
@@ -1988,50 +1988,6 @@
           nicheBadge: "Conta Conectada"
         },
         campaigns: []
-      },
-      {
-        id: "act_9928104821",
-        name: "Clínica Renove Estética & Odonto",
-        niche: "Saúde & Estética Local",
-        currency: "BRL",
-        status: 1,
-        targetRoas: "4.0",
-        targetCpa: "15.00",
-        dailyBudget: "250.00",
-        kpi: {
-          roas: "4.60x",
-          revenue: "R$ 28.500,00",
-          spend: "R$ 6.196,00",
-          leads: "1.290 Contatos",
-          cpa: "R$ 4,80",
-          nicheBadge: "Leads WhatsApp"
-        },
-        campaigns: [
-          {
-            name: "💬 [WHATSAPP] Agendamento de Harmonização & Botox",
-            effective_status: "ACTIVE",
-            objective: "MESSAGES",
-            spend: "R$ 4.100,00",
-            results: "854 Conversas",
-            cpr: "R$ 4,80",
-            roas: "4.8x",
-            clicks: "6.800",
-            ctr: "4.30%",
-            cpc: "R$ 0,60",
-            start_time: "2026-08-01",
-            stop_time: "2026-08-31",
-            adsets: {
-              data: [
-                { name: "Raio 15km da Clínica - Mulheres 28-60", effective_status: "ACTIVE", destination_type: "WHATSAPP", optimization_goal: "CONVERSATIONS" }
-              ]
-            },
-            ads: {
-              data: [
-                { id: "ad_4", name: "Vídeo Antes e Depois (Dra. Camila)", effective_status: "ACTIVE", copy: "Recupere o contorno facial com procedimentos naturais e sem dor. Agende sua avaliação gratuita pelo WhatsApp!", headline: "Avaliação Gratuita nesta Semana", cta: "Enviar Mensagem" }
-              ]
-            }
-          }
-        ]
       }
     ];
 
@@ -2041,7 +1997,7 @@
       if (stored) {
         try {
           const parsed = JSON.parse(stored);
-          if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].id === 'act_2146995242526586') {
+          if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].id === 'act_2146995242526586' && !parsed.some(c => c.name.includes('Clínica') || c.name.includes('Luxo'))) {
             return parsed;
           }
         } catch (e) {}
