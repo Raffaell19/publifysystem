@@ -1229,6 +1229,56 @@
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
+    /* Toast Notification */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .toast-item {
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-md);
+      padding: 12px 18px;
+      color: #f8fafc;
+      font-size: 0.88rem;
+      backdrop-filter: var(--glass-blur);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      pointer-events: auto;
+      max-width: 380px;
+    }
+
+    .toast-item.success {
+      border-left: 4px solid var(--color-emerald);
+    }
+
+    .toast-item.warning {
+      border-left: 4px solid var(--color-amber);
+    }
+
+    .toast-item.info {
+      border-left: 4px solid var(--brand-primary);
+    }
+
+    @keyframes slideInRight {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes fadeOutRight {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(100%); opacity: 0; }
+    }
+
     @media (max-width: 900px) {
       .agency-meta-group { gap: 1.25rem; }
       .detail-section { grid-template-columns: 1fr; }
@@ -1237,6 +1287,9 @@
   </style>
 </head>
 <body>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
 
   <!-- Loading State -->
   <div id="loading" class="loading-overlay" style="display: none;">
@@ -2002,7 +2055,25 @@
       localStorage.setItem('publify_clients', JSON.stringify(clients));
     }
 
-    let clients = getStoredClients();
+    function showToast(title, message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+      const toast = document.createElement('div');
+      toast.className = `toast-item ${type}`;
+      const icon = type === 'success' ? '✓' : (type === 'warning' ? '⚠️' : 'ℹ️');
+      toast.innerHTML = `
+        <span style="font-size:1.15rem; font-weight:bold;">${icon}</span>
+        <div>
+          <div style="font-weight:700; font-size:0.86rem; color:#f8fafc;">${title}</div>
+          <div style="font-size:0.78rem; color:#cbd5e1; margin-top:2px;">${message}</div>
+        </div>
+      `;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.animation = 'fadeOutRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+        setTimeout(() => toast.remove(), 300);
+      }, 4000);
+    }
 
     // Live Sync with Meta API
     async function syncWithMetaApi(showNotification = false) {
@@ -2040,15 +2111,15 @@
 
           if (syncLabel) syncLabel.textContent = 'Sincronizado ✓';
           if (showNotification) {
-            alert(`✅ Meta API Sincronizada!\n${metaAccounts.length} contas de anúncios atualizadas com métricas reais em tempo real.`);
+            showToast('Meta API Sincronizada', `${metaAccounts.length} contas conectadas com dados reais.`, 'success');
           }
         } else {
           if (syncLabel) syncLabel.textContent = 'Sincronizar Meta Ads';
           if (showNotification) {
             if (data.needsConfig) {
-              alert('ℹ️ Para sincronizar em tempo real na Vercel:\nConfigure a variável META_ACCESS_TOKEN nas Configurações da Vercel ou clique no botão Setup e salve o seu token.');
+              showToast('Token Necessário', 'Cole seu token no botão Setup para sincronizar ao vivo na Vercel.', 'info');
             } else {
-              alert('Aviso da Meta API: ' + (data.error || 'Nenhum dado retornado.'));
+              showToast('Aviso da Meta', data.error || 'A Meta não retornou dados para este token.', 'warning');
             }
           }
         }
@@ -2056,7 +2127,7 @@
         console.warn('Sync notice:', err.message);
         if (syncLabel) syncLabel.textContent = 'Sincronizar Meta Ads';
         if (showNotification) {
-          alert('Não foi possível conectar ao endpoint no momento: ' + err.message);
+          showToast('Conexão Offline', 'Exibindo dados locais da campanha.', 'info');
         }
       }
 
@@ -2357,7 +2428,7 @@
       saveStoredClients(clients);
       closeNewClientModal();
       selectActiveClient(0);
-      alert(`Cliente "${name}" conectado com sucesso! O painel já foi atualizado.`);
+      showToast('Cliente Conectado', `Perfil "${name}" ativado com sucesso!`, 'success');
     }
 
     // WIZARD CONTROLS

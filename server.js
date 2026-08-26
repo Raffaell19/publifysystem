@@ -44,7 +44,7 @@ function formatCurrency(val) {
 }
 
 function processMetaAccountData(acc, campaignsData) {
-  const rawCamps = (campaignsData && campaignsData.data) ? campaignsData.data : [];
+  const rawCamps = (campaignsData && campaignsData.data && Array.isArray(campaignsData.data)) ? campaignsData.data : [];
   
   let totalSpend = 0;
   let totalResults = 0;
@@ -168,7 +168,9 @@ async function handleApiData(req, res) {
     const accountsData = await httpsGet(accountsUrl);
     
     if (accountsData.error) {
-      throw new Error(accountsData.error.message);
+      res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+      res.end(JSON.stringify({ success: false, error: accountsData.error.message, code: accountsData.error.code }));
+      return;
     }
 
     const accounts = accountsData.data || [];
@@ -176,10 +178,24 @@ async function handleApiData(req, res) {
 
     // 2. Fetch Detailed Campaigns & Insights for each Account
     for (const acc of accounts) {
-      const campUrl = `https://graph.facebook.com/v20.0/act_${acc.account_id}/campaigns?fields=id,name,status,effective_status,daily_budget,lifetime_budget,budget_remaining,start_time,stop_time,objective,buying_type,created_time,updated_time,insights.date_preset(maximum){impressions,clicks,spend,cpc,cpm,ctr,reach,actions,cost_per_action_type,conversions,purchase_roas},adsets{id,name,status,effective_status,optimization_goal,billing_event,bid_amount,destination_type,daily_budget,lifetime_budget,start_time,end_time,insights.date_preset(maximum){impressions,clicks,spend,reach}},ads{id,name,status,effective_status,creative{id,name,body,image_url,thumbnail_url,title,object_story_spec},insights.date_preset(maximum){impressions,clicks,spend,ctr,cpc,actions,cost_per_action_type}}&access_token=${encodeURIComponent(token)}`;
-      const campData = await httpsGet(campUrl);
-      
-      result.push(processMetaAccountData(acc, campData));
+      try {
+        const campUrl = `https://graph.facebook.com/v20.0/act_${acc.account_id}/campaigns?fields=id,name,status,effective_status,daily_budget,lifetime_budget,budget_remaining,start_time,stop_time,objective,buying_type,created_time,updated_time,insights.date_preset(maximum){impressions,clicks,spend,cpc,cpm,ctr,reach,actions,cost_per_action_type,conversions,purchase_roas},adsets{id,name,status,effective_status,optimization_goal,billing_event,bid_amount,destination_type,daily_budget,lifetime_budget,start_time,end_time,insights.date_preset(maximum){impressions,clicks,spend,reach}},ads{id,name,status,effective_status,creative{id,name,body,image_url,thumbnail_url,title,object_story_spec},insights.date_preset(maximum){impressions,clicks,spend,ctr,cpc,actions,cost_per_action_type}}&access_token=${encodeURIComponent(token)}`;
+        let campData = await httpsGet(campUrl);
+        
+        if (campData.error) {
+          const fallbackUrl = `https://graph.facebook.com/v20.0/act_${acc.account_id}/campaigns?fields=id,name,status,effective_status,daily_budget,lifetime_budget,start_time,stop_time,objective,adsets{id,name,status,effective_status,optimization_goal,destination_type},ads{id,name,status,effective_status,creative{id,name,body,image_url,thumbnail_url,title}}&access_token=${encodeURIComponent(token)}`;
+          campData = await httpsGet(fallbackUrl);
+        }
+
+        if (!campData.error) {
+          result.push(processMetaAccountData(acc, campData));
+        } else {
+          result.push(processMetaAccountData(acc, { data: [] }));
+        }
+      } catch (accErr) {
+        console.warn('Could not fetch account campaigns:', acc.account_id, accErr.message);
+        result.push(processMetaAccountData(acc, { data: [] }));
+      }
     }
 
     res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
