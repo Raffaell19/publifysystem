@@ -2008,17 +2008,21 @@
     async function syncWithMetaApi(showNotification = false) {
       const syncBtn = document.getElementById('btn-sync-meta');
       const syncLabel = document.getElementById('sync-btn-label');
+      const savedToken = localStorage.getItem('meta_user_token') || '';
       
       if (syncLabel) syncLabel.textContent = 'Sincronizando...';
 
       try {
-        const response = await fetch('/api/data');
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+        const headers = { 'Content-Type': 'application/json' };
+        if (savedToken) {
+          headers['x-meta-token'] = savedToken;
         }
+
+        const url = savedToken ? `/api/data?token=${encodeURIComponent(savedToken)}` : '/api/data';
+        const response = await fetch(url, { headers });
         const data = await response.json();
         
-        if (data.accounts && Array.isArray(data.accounts) && data.accounts.length > 0) {
+        if (data.success && data.accounts && Array.isArray(data.accounts) && data.accounts.length > 0) {
           // Merge API accounts into clients list
           const metaAccounts = data.accounts;
           const merged = [...metaAccounts];
@@ -2041,14 +2045,18 @@
         } else {
           if (syncLabel) syncLabel.textContent = 'Sincronizar Meta Ads';
           if (showNotification) {
-            alert('Não foi possível obter dados da Meta API. Verifique a chave em .env');
+            if (data.needsConfig) {
+              alert('ℹ️ Para sincronizar em tempo real na Vercel:\nConfigure a variável META_ACCESS_TOKEN nas Configurações da Vercel ou clique no botão Setup e salve o seu token.');
+            } else {
+              alert('Aviso da Meta API: ' + (data.error || 'Nenhum dado retornado.'));
+            }
           }
         }
       } catch (err) {
         console.warn('Sync notice:', err.message);
         if (syncLabel) syncLabel.textContent = 'Sincronizar Meta Ads';
         if (showNotification) {
-          alert('Conexão com a API Meta: ' + err.message);
+          alert('Não foi possível conectar ao endpoint no momento: ' + err.message);
         }
       }
 
@@ -2355,6 +2363,10 @@
     // WIZARD CONTROLS
     function openWizardModal(step = 1) {
       document.getElementById('wizard-modal').style.display = 'flex';
+      const storedToken = localStorage.getItem('meta_user_token');
+      if (storedToken && document.getElementById('input-token')) {
+        document.getElementById('input-token').value = storedToken;
+      }
       goToStep(step);
     }
 
@@ -2385,7 +2397,7 @@
     }
 
     function fillDemoWizardData() {
-      document.getElementById('input-token').value = 'EAAS1Jg3e...';
+      document.getElementById('input-token').value = 'EAAS1Jg3e8DkBSSmDI6StMD00FDadtMDZAIZCBZBDtOloiaOrJIbzTwW1w9NLPWOnVaN6w54bcpPMkCvc58RQeEMJNCjxCmOPsZCrHb8VyRXyzW8t9ZBsmEgt25p5MNTqaIzKWix29CvAx1xoWJZCR9LCquGq8Vq8eHqZCPO4BSduWbkN0UztA7eLTZC0ZBQ1naxpNwnf2p280b6dsKxt9EZC3IzdAU2E9HflMblNnxZCLJGCUuampTGh6XWlTVbRx5qCz44oBZBVyK4ATy0XDYy5j1SUwUzi';
       document.getElementById('input-account-id').value = clients[activeClientIndex].id;
       document.getElementById('input-account-name').value = clients[activeClientIndex].name;
       document.getElementById('input-target-roas').value = clients[activeClientIndex].targetRoas || '4.8';
@@ -2394,13 +2406,17 @@
     }
 
     function saveWizardConfig() {
+      const tokenVal = document.getElementById('input-token').value.trim();
+      if (tokenVal) {
+        localStorage.setItem('meta_user_token', tokenVal);
+      }
       clients[activeClientIndex].targetRoas = document.getElementById('input-target-roas').value;
       clients[activeClientIndex].targetCpa = document.getElementById('input-max-cpa').value;
       clients[activeClientIndex].dailyBudget = document.getElementById('input-daily-budget').value;
       saveStoredClients(clients);
       closeWizardModal();
       renderDashboard();
-      alert('Configurações salvas para o perfil ativo!');
+      syncWithMetaApi(true);
     }
 
     // CREATIVE AD PREVIEW CONTROLS

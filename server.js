@@ -131,11 +131,11 @@ function processMetaAccountData(acc, campaignsData) {
   return {
     id: `act_${acc.account_id}`,
     name: acc.name,
-    niche: acc.name.includes('Wood') ? 'Madeira Personalizada & E-commerce' : (acc.name.includes('Prime') ? 'Cubas & Marmoraria' : 'Meta Ads Oficial'),
+    niche: acc.name.includes('Wood') ? 'Tábua Personalizada & E-commerce' : (acc.name.includes('Prime') ? 'Cubas & Marmoraria' : 'Meta Ads Oficial'),
     currency: acc.currency || 'BRL',
     status: acc.account_status || 1,
-    targetRoas: '4.5',
-    targetCpa: '10.00',
+    targetRoas: '4.8',
+    targetCpa: '3.00',
     dailyBudget: '16.00',
     kpi: {
       roas: '4.80x',
@@ -143,7 +143,7 @@ function processMetaAccountData(acc, campaignsData) {
       spend: formatCurrency(totalSpend),
       leads: totalResults > 0 ? `${totalResults} Conversas` : `${totalClicks} Cliques`,
       cpa: totalResults > 0 ? formatCurrency(totalSpend / totalResults) : formatCurrency(totalClicks > 0 ? totalSpend / totalClicks : 0),
-      nicheBadge: 'Campanha Ativa'
+      nicheBadge: 'Meta Ads Oficial'
     },
     campaigns: processedCampaigns
   };
@@ -151,10 +151,14 @@ function processMetaAccountData(acc, campaignsData) {
 
 // Main API Handler
 async function handleApiData(req, res) {
-  const token = getMetaToken();
+  const urlObj = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+  const queryToken = urlObj.searchParams.get('token');
+  const headerToken = req.headers['x-meta-token'];
+  const token = getMetaToken() || queryToken || headerToken;
+
   if (!token) {
-    res.writeHead(500, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
-    res.end(JSON.stringify({ error: 'META_ACCESS_TOKEN not found in .env' }));
+    res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+    res.end(JSON.stringify({ success: false, error: 'META_ACCESS_TOKEN not found in .env or request' }));
     return;
   }
 
@@ -182,7 +186,7 @@ async function handleApiData(req, res) {
     res.end(JSON.stringify({ success: true, accounts: result }));
   } catch (err) {
     console.error('API proxy error:', err);
-    res.writeHead(500, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+    res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
     res.end(JSON.stringify({ success: false, error: err.message }));
   }
 }
@@ -194,19 +198,20 @@ const server = http.createServer((req, res) => {
     res.writeHead(204, {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type'
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-meta-token'
     });
     res.end();
     return;
   }
 
-  if (req.url === '/api/data') {
+  if (req.url.startsWith('/api/data')) {
     handleApiData(req, res);
     return;
   }
 
   // Serve static files
-  let filePath = path.join(__dirname, req.url === '/' ? 'index.html' : req.url);
+  let reqPath = req.url.split('?')[0];
+  let filePath = path.join(__dirname, reqPath === '/' ? 'index.html' : reqPath);
   
   // Guard against path traversal
   if (!filePath.startsWith(__dirname)) {
