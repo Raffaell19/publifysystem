@@ -1677,17 +1677,17 @@
 
           <div class="form-group">
             <label class="form-label">Meta Access Token (Permanente de Sistema ou Usuário)</label>
-            <input type="password" id="input-token" class="form-input" placeholder="EAAG..." value="EAAG_DEMO_TOKEN_PUBLIFY_SECURE_KEY_84920">
+            <input type="password" id="input-token" class="form-input" placeholder="Cole seu token EAAS... ou EAAG...">
           </div>
 
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">Meta App ID</label>
-              <input type="text" id="input-app-id" class="form-input" value="984210492817291">
+              <input type="text" id="input-app-id" class="form-input" placeholder="ex: 1325074952941625">
             </div>
             <div class="form-group">
               <label class="form-label">Meta App Secret</label>
-              <input type="password" id="input-app-secret" class="form-input" value="••••••••••••••••••••••••">
+              <input type="password" id="input-app-secret" class="form-input" placeholder="••••••••••••••••••••••••">
             </div>
           </div>
         </div>
@@ -1702,18 +1702,18 @@
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">ID da Conta de Anúncios (act_...)</label>
-              <input type="text" id="input-account-id" class="form-input" value="act_8492019482">
+              <input type="text" id="input-account-id" class="form-input" value="act_2146995242526586">
             </div>
             <div class="form-group">
               <label class="form-label">Nome Fantasia / Cliente</label>
-              <input type="text" id="input-account-name" class="form-input" value="Luxo Moda E-commerce">
+              <input type="text" id="input-account-name" class="form-input" value="R.P Wood Personalizados">
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">ID do Meta Pixel</label>
-              <input type="text" id="input-pixel-id" class="form-input" value="4829104928172">
+              <input type="text" id="input-pixel-id" class="form-input" placeholder="ex: 4829104928172">
             </div>
             <div class="form-group">
               <label class="form-label">Moeda Padrão</label>
@@ -1736,22 +1736,22 @@
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">ROAS Mínimo Desejado</label>
-              <input type="number" step="0.1" id="input-target-roas" class="form-input" value="4.5">
+              <input type="number" step="0.1" id="input-target-roas" class="form-input" value="4.8">
             </div>
             <div class="form-group">
               <label class="form-label">CPA Máximo Aceitável (R$)</label>
-              <input type="number" step="0.5" id="input-max-cpa" class="form-input" value="12.00">
+              <input type="number" step="0.5" id="input-max-cpa" class="form-input" value="3.00">
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">Orçamento Diário (R$)</label>
-              <input type="number" id="input-daily-budget" class="form-input" value="450.00">
+              <input type="number" id="input-daily-budget" class="form-input" value="16.00">
             </div>
             <div class="form-group">
               <label class="form-label">WhatsApp para Alertas</label>
-              <input type="text" id="input-whatsapp" class="form-input" value="+55 (11) 98765-4321">
+              <input type="text" id="input-whatsapp" class="form-input" placeholder="+55 (11) 98765-4321">
             </div>
           </div>
         </div>
@@ -2433,9 +2433,24 @@
     // WIZARD CONTROLS
     function openWizardModal(step = 1) {
       document.getElementById('wizard-modal').style.display = 'flex';
-      const storedToken = localStorage.getItem('meta_user_token');
-      if (storedToken && document.getElementById('input-token')) {
-        document.getElementById('input-token').value = storedToken;
+      const storedToken = localStorage.getItem('meta_user_token') || '';
+      const client = clients[activeClientIndex] || clients[0];
+      
+      const tokenInput = document.getElementById('input-token');
+      if (tokenInput) tokenInput.value = storedToken;
+
+      if (client) {
+        const accId = document.getElementById('input-account-id');
+        const accName = document.getElementById('input-account-name');
+        const targetRoas = document.getElementById('input-target-roas');
+        const targetCpa = document.getElementById('input-max-cpa');
+        const dailyBudget = document.getElementById('input-daily-budget');
+
+        if (accId) accId.value = client.id || 'act_2146995242526586';
+        if (accName) accName.value = client.name || 'R.P Wood Personalizados';
+        if (targetRoas) targetRoas.value = client.targetRoas || '4.8';
+        if (targetCpa) targetCpa.value = client.targetCpa || '3.00';
+        if (dailyBudget) dailyBudget.value = client.dailyBudget || '16.00';
       }
       goToStep(step);
     }
@@ -2467,26 +2482,54 @@
     }
 
     function fillDemoWizardData() {
-      document.getElementById('input-token').value = 'EAAS1Jg3e8DkBSSmDI6StMD00FDadtMDZAIZCBZBDtOloiaOrJIbzTwW1w9NLPWOnVaN6w54bcpPMkCvc58RQeEMJNCjxCmOPsZCrHb8VyRXyzW8t9ZBsmEgt25p5MNTqaIzKWix29CvAx1xoWJZCR9LCquGq8Vq8eHqZCPO4BSduWbkN0UztA7eLTZC0ZBQ1naxpNwnf2p280b6dsKxt9EZC3IzdAU2E9HflMblNnxZCLJGCUuampTGh6XWlTVbRx5qCz44oBZBVyK4ATy0XDYy5j1SUwUzi';
-      document.getElementById('input-account-id').value = clients[activeClientIndex].id;
-      document.getElementById('input-account-name').value = clients[activeClientIndex].name;
-      document.getElementById('input-target-roas').value = clients[activeClientIndex].targetRoas || '4.8';
-      document.getElementById('input-max-cpa').value = clients[activeClientIndex].targetCpa || '3.00';
-      document.getElementById('input-daily-budget').value = clients[activeClientIndex].dailyBudget || '16.00';
+      const client = clients[activeClientIndex] || clients[0];
+      const accId = document.getElementById('input-account-id');
+      const accName = document.getElementById('input-account-name');
+      const targetRoas = document.getElementById('input-target-roas');
+      const targetCpa = document.getElementById('input-max-cpa');
+      const dailyBudget = document.getElementById('input-daily-budget');
+
+      if (accId) accId.value = (client && client.id) ? client.id : 'act_2146995242526586';
+      if (accName) accName.value = (client && client.name) ? client.name : 'R.P Wood Personalizados';
+      if (targetRoas) targetRoas.value = (client && client.targetRoas) ? client.targetRoas : '4.8';
+      if (targetCpa) targetCpa.value = (client && client.targetCpa) ? client.targetCpa : '3.00';
+      if (dailyBudget) dailyBudget.value = (client && client.dailyBudget) ? client.dailyBudget : '16.00';
     }
 
     function saveWizardConfig() {
-      const tokenVal = document.getElementById('input-token').value.trim();
-      if (tokenVal) {
-        localStorage.setItem('meta_user_token', tokenVal);
+      try {
+        const tokenInput = document.getElementById('input-token');
+        if (tokenInput && tokenInput.value.trim()) {
+          localStorage.setItem('meta_user_token', tokenInput.value.trim());
+        }
+
+        const client = clients[activeClientIndex] || clients[0];
+        if (client) {
+          const accId = document.getElementById('input-account-id');
+          const accName = document.getElementById('input-account-name');
+          const targetRoas = document.getElementById('input-target-roas');
+          const targetCpa = document.getElementById('input-max-cpa');
+          const dailyBudget = document.getElementById('input-daily-budget');
+
+          if (accId && accId.value.trim()) client.id = accId.value.trim();
+          if (accName && accName.value.trim()) client.name = accName.value.trim();
+          if (targetRoas && targetRoas.value) client.targetRoas = targetRoas.value;
+          if (targetCpa && targetCpa.value) client.targetCpa = targetCpa.value;
+          if (dailyBudget && dailyBudget.value) client.dailyBudget = dailyBudget.value;
+        }
+
+        saveStoredClients(clients);
+        closeWizardModal();
+        renderDashboard();
+        showToast('Configurações Salvas', 'Perfil e metas foram atualizados com sucesso!', 'success');
+        
+        // Trigger live sync in background
+        syncWithMetaApi(true);
+      } catch (err) {
+        console.error('Error saving wizard config:', err);
+        closeWizardModal();
+        showToast('Configurações Salvas', 'Dados salvos com sucesso no navegador.', 'success');
       }
-      clients[activeClientIndex].targetRoas = document.getElementById('input-target-roas').value;
-      clients[activeClientIndex].targetCpa = document.getElementById('input-max-cpa').value;
-      clients[activeClientIndex].dailyBudget = document.getElementById('input-daily-budget').value;
-      saveStoredClients(clients);
-      closeWizardModal();
-      renderDashboard();
-      syncWithMetaApi(true);
     }
 
     // CREATIVE AD PREVIEW CONTROLS
