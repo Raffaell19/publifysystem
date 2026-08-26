@@ -63,7 +63,6 @@ function processMetaAccountData(acc, campaignsData) {
     totalClicks += clicksNum;
     totalImpressions += impNum;
 
-    // Find conversation / lead action
     let resultCount = 0;
     if (ins.actions && Array.isArray(ins.actions)) {
       const convAction = ins.actions.find(a => 
@@ -78,7 +77,6 @@ function processMetaAccountData(acc, campaignsData) {
 
     const cprVal = resultCount > 0 ? formatCurrency(spendNum / resultCount) : (ins.cpc ? formatCurrency(ins.cpc) : 'R$ 0,00');
     
-    // Process adsets
     const adsetsList = (c.adsets && c.adsets.data) ? c.adsets.data.map(as => ({
       id: as.id,
       name: as.name,
@@ -87,7 +85,6 @@ function processMetaAccountData(acc, campaignsData) {
       optimization_goal: as.optimization_goal || 'CONVERSATIONS'
     })) : [];
 
-    // Process ads
     const adsList = (c.ads && c.ads.data) ? c.ads.data.map(ad => {
       const adIns = (ad.insights && ad.insights.data && ad.insights.data[0]) ? ad.insights.data[0] : {};
       const creative = ad.creative || {};
@@ -154,26 +151,49 @@ async function handleApiData(req, res) {
   const urlObj = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
   const queryToken = urlObj.searchParams.get('token');
   const headerToken = req.headers['x-meta-token'];
-  const token = getMetaToken() || queryToken || headerToken;
+  const token = (queryToken || headerToken || getMetaToken() || '').trim();
 
   if (!token) {
     res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
-    res.end(JSON.stringify({ success: false, error: 'META_ACCESS_TOKEN not found in .env or request' }));
+    res.end(JSON.stringify({ success: false, error: 'Token da Meta não informado. Cole seu token no botão Setup.', needsConfig: true }));
     return;
   }
 
   try {
     // 1. Fetch Ad Accounts
     const accountsUrl = `https://graph.facebook.com/v20.0/me/adaccounts?fields=name,account_id,account_status,currency&access_token=${encodeURIComponent(token)}`;
-    const accountsData = await httpsGet(accountsUrl);
-    
-    if (accountsData.error) {
+    let accountsData = await httpsGet(accountsUrl);
+    let accounts = accountsData.data || [];
+
+    // Fallback: If /me/adaccounts has permission restriction, query known direct accounts
+    if (accounts.length === 0) {
+      const directAccountIds = ['2146995242526586', '1305549817480553', '740205721180364'];
+      for (const dId of directAccountIds) {
+        try {
+          const directAccUrl = `https://graph.facebook.com/v20.0/act_${dId}?fields=name,account_id,account_status,currency&access_token=${encodeURIComponent(token)}`;
+          const directAccData = await httpsGet(directAccUrl);
+          if (directAccData && directAccData.account_id) {
+            accounts.push(directAccData);
+          }
+        } catch (e) {}
+      }
+    }
+
+    if (accounts.length === 0) {
+      const isPermError = accountsData.error && (accountsData.error.code === 200 || accountsData.error.code === 190);
+      const userMsg = isPermError 
+        ? 'O token precisa das permissões "ads_read" e "ads_management". Gere novamente no Graph API Explorer marcando essas caixas.'
+        : (accountsData.error ? accountsData.error.message : 'Nenhuma conta de anúncios encontrada para este token.');
+
       res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
-      res.end(JSON.stringify({ success: false, error: accountsData.error.message, code: accountsData.error.code }));
+      res.end(JSON.stringify({ 
+        success: false, 
+        error: userMsg, 
+        code: accountsData.error ? accountsData.error.code : 404 
+      }));
       return;
     }
 
-    const accounts = accountsData.data || [];
     const result = [];
 
     // 2. Fetch Detailed Campaigns & Insights for each Account
@@ -209,7 +229,6 @@ async function handleApiData(req, res) {
 
 // Server Creation
 const server = http.createServer((req, res) => {
-  // CORS preflight
   if (req.method === 'OPTIONS') {
     res.writeHead(204, {
       'Access-Control-Allow-Origin': '*',
@@ -225,11 +244,9 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // Serve static files
   let reqPath = req.url.split('?')[0];
   let filePath = path.join(__dirname, reqPath === '/' ? 'index.html' : reqPath);
   
-  // Guard against path traversal
   if (!filePath.startsWith(__dirname)) {
     res.writeHead(403);
     res.end('Forbidden');
@@ -239,21 +256,11 @@ const server = http.createServer((req, res) => {
   const extname = path.extname(filePath);
   let contentType = 'text/html';
   switch (extname) {
-    case '.js':
-      contentType = 'text/javascript';
-      break;
-    case '.css':
-      contentType = 'text/css';
-      break;
-    case '.json':
-      contentType = 'application/json';
-      break;
-    case '.png':
-      contentType = 'image/png';
-      break;
-    case '.jpg':
-      contentType = 'image/jpg';
-      break;
+    case '.js': contentType = 'text/javascript'; break;
+    case '.css': contentType = 'text/css'; break;
+    case '.json': contentType = 'application/json'; break;
+    case '.png': contentType = 'image/png'; break;
+    case '.jpg': contentType = 'image/jpg'; break;
   }
 
   fs.readFile(filePath, (error, content) => {

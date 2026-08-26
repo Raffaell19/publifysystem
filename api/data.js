@@ -144,12 +144,12 @@ module.exports = async (req, res) => {
   const urlObj = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
   const queryToken = urlObj.searchParams.get('token');
   const headerToken = req.headers['x-meta-token'];
-  const token = process.env.META_ACCESS_TOKEN || queryToken || headerToken;
+  const token = (queryToken || headerToken || process.env.META_ACCESS_TOKEN || '').trim();
 
   if (!token) {
     res.status(200).json({ 
       success: false, 
-      error: 'META_ACCESS_TOKEN não configurada na Vercel ou não informada.',
+      error: 'Token da Meta não informado. Cole seu token no botão Setup.',
       needsConfig: true
     });
     return;
@@ -158,19 +158,37 @@ module.exports = async (req, res) => {
   try {
     // 1. Fetch Ad Accounts
     const accountsUrl = `https://graph.facebook.com/v20.0/me/adaccounts?fields=name,account_id,account_status,currency&access_token=${encodeURIComponent(token)}`;
-    const accountsData = await httpsGet(accountsUrl);
-    
-    if (accountsData.error) {
+    let accountsData = await httpsGet(accountsUrl);
+    let accounts = accountsData.data || [];
+
+    // Fallback: If /me/adaccounts has permission restriction, query known direct accounts
+    if (accounts.length === 0) {
+      const directAccountIds = ['2146995242526586', '1305549817480553', '740205721180364'];
+      for (const dId of directAccountIds) {
+        try {
+          const directAccUrl = `https://graph.facebook.com/v20.0/act_${dId}?fields=name,account_id,account_status,currency&access_token=${encodeURIComponent(token)}`;
+          const directAccData = await httpsGet(directAccUrl);
+          if (directAccData && directAccData.account_id) {
+            accounts.push(directAccData);
+          }
+        } catch (e) {}
+      }
+    }
+
+    if (accounts.length === 0) {
+      const isPermError = accountsData.error && (accountsData.error.code === 200 || accountsData.error.code === 190);
+      const userMsg = isPermError 
+        ? 'O token precisa das permissões "ads_read" e "ads_management". Gere novamente no Graph API Explorer marcando essas caixas.'
+        : (accountsData.error ? accountsData.error.message : 'Nenhuma conta de anúncios encontrada para este token.');
+
       res.status(200).json({ 
         success: false, 
-        error: accountsData.error.message, 
-        code: accountsData.error.code,
-        subcode: accountsData.error.error_subcode 
+        error: userMsg, 
+        code: accountsData.error ? accountsData.error.code : 404
       });
       return;
     }
 
-    const accounts = accountsData.data || [];
     const result = [];
 
     // 2. Fetch Detailed Campaigns & Insights for each Account with fallback
