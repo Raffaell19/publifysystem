@@ -1268,15 +1268,21 @@
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
 
+        <!-- Live Sync with Meta API -->
+        <button id="btn-sync-meta" class="btn-action" onclick="syncWithMetaApi(true)" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.4); color: #34d399;" title="Sincronizar dados em tempo real com a Meta Graph API">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+          <span id="sync-btn-label">Sincronizar Meta Ads</span>
+        </button>
+
         <!-- Mode Switcher -->
         <div class="mode-switch-wrapper">
-          <button id="btn-mode-demo" class="mode-btn active" onclick="setAppMode('demo')">
+          <button id="btn-mode-demo" class="mode-btn" onclick="setAppMode('demo')">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg>
             Modo Demo
           </button>
-          <button id="btn-mode-live" class="mode-btn" onclick="setAppMode('live')">
+          <button id="btn-mode-live" class="mode-btn active" onclick="setAppMode('live')">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-            API Real
+            API Real (Ativa)
           </button>
         </div>
 
@@ -1810,81 +1816,125 @@
 
   <!-- SCRIPT LOGIC -->
   <script>
-    let currentMode = 'demo';
+    let currentMode = 'live';
     let currentWizardStep = 1;
     let activeClientIndex = 0;
 
-    // Rich Diverse Multi-Client Portfolio Dataset
+    // Real Meta Connected Accounts & Multi-Client Portfolio Dataset
     const DEFAULT_CLIENTS = [
       {
-        id: "act_RPWOOD_OFICIAL",
-        name: "R.P Wood (Minha Conta Oficial)",
-        niche: "Facebook & Instagram Ads",
+        id: "act_2146995242526586",
+        name: "R.P Wood Personalizados",
+        niche: "Tábua Personalizada & E-commerce",
         currency: "BRL",
         status: 1,
         targetRoas: "4.8",
-        targetCpa: "10.00",
-        dailyBudget: "500.00",
+        targetCpa: "3.00",
+        dailyBudget: "16.00",
         kpi: {
-          roas: "5.42x",
-          revenue: "R$ 48.920,00",
-          spend: "R$ 9.020,00",
-          leads: "1.650 Conversões",
-          cpa: "R$ 5,46",
+          roas: "4.80x",
+          revenue: "R$ 202,37",
+          spend: "R$ 42,16",
+          leads: "16 Conversas",
+          cpa: "R$ 2,63",
           nicheBadge: "Meta Ads Oficial"
         },
         campaigns: [
           {
-            name: "🔥 [ESCALA] Vendas & Tráfego Direto - R.P Wood",
+            id: "120252552491730154",
+            name: "TÁBUAS PERSONALIZADAS",
             effective_status: "ACTIVE",
             objective: "OUTCOME_SALES",
-            spend: "R$ 5.420,00",
-            results: "980 Vendas",
-            cpr: "R$ 5,53",
-            roas: "5.8x",
-            clicks: "12.800",
-            ctr: "4.10%",
-            cpc: "R$ 0,42",
-            start_time: "2026-08-01",
-            stop_time: "2026-08-31",
+            spend: "R$ 42,16",
+            results: "16 Conversas",
+            cpr: "R$ 2,63",
+            roas: "4.8x",
+            clicks: "43",
+            ctr: "1,94%",
+            cpc: "R$ 0,98",
+            start_time: "2026-07-17",
+            stop_time: "2026-07-20",
             adsets: {
               data: [
-                { name: "Público Aberto (CBO) - Brasil", effective_status: "ACTIVE", destination_type: "CHECKOUT", optimization_goal: "PURCHASE" },
-                { name: "Remarketing 7 Dias (Instagram & Facebook)", effective_status: "ACTIVE", destination_type: "CHECKOUT", optimization_goal: "PURCHASE" }
+                {
+                  id: "120252552491740154",
+                  name: "TABUAS PERSONALIZADAS - ADS 1",
+                  effective_status: "ACTIVE",
+                  destination_type: "WHATSAPP",
+                  optimization_goal: "CONVERSATIONS"
+                }
               ]
             },
             ads: {
               data: [
-                { id: "ad_rp1", name: "Vídeo 01 - Anúncio Oficial R.P Wood", effective_status: "ACTIVE", copy: "Transforme seus resultados com a melhor estratégia de anúncios do mercado!", headline: "Oferta Exclusiva R.P Wood", cta: "Comprar Agora" },
-                { id: "ad_rp2", name: "Carrossel Produtos & Serviços", effective_status: "ACTIVE", copy: "Confira as novidades no Instagram e garanta condições especiais hoje.", headline: "Atendimento Rápido e Direto", cta: "Saiba Mais" }
-              ]
-            }
-          },
-          {
-            name: "💬 [LEADS] Captação Direta WhatsApp & Direct",
-            effective_status: "ACTIVE",
-            objective: "MESSAGES",
-            spend: "R$ 3.600,00",
-            results: "670 Conversas",
-            cpr: "R$ 5,37",
-            roas: "4.9x",
-            clicks: "7.400",
-            ctr: "4.50%",
-            cpc: "R$ 0,48",
-            start_time: "2026-08-05",
-            stop_time: "2026-08-31",
-            adsets: {
-              data: [
-                { name: "Engajamento Instagram & Direct", effective_status: "ACTIVE", destination_type: "WHATSAPP", optimization_goal: "CONVERSATIONS" }
-              ]
-            },
-            ads: {
-              data: [
-                { id: "ad_rp3", name: "Direct / WhatsApp - Fale Conosco", effective_status: "ACTIVE", copy: "Tire suas dúvidas diretamente pelo WhatsApp com nossa equipe.", headline: "Fale no WhatsApp Oficial", cta: "Enviar Mensagem" }
+                {
+                  id: "120252552491720154",
+                  name: "TABUAS PERSONALIZADAS - A1 - VIDEO",
+                  effective_status: "ACTIVE",
+                  copy: "Transforme seus momentos de churrasco com nossas Tábuas Personalizadas em madeira nobre. Fale conosco no WhatsApp!",
+                  headline: "Personalize a Sua no WhatsApp",
+                  cta: "Enviar Mensagem",
+                  thumbnail_url: "https://scontent-poa1-1.xx.fbcdn.net/v/t15.5256-10/747324714_1752839655746756_6006478104954748266_n.jpg?_nc_cat=106&ccb=1-7&_nc_eui2=AeHx-at20dsMO8vc8GZAMrErEYJC2199X3IRgkLbX31fcufk5bbrVttxmj2GNQZQkxcFITAp9-Yg0Bzz2uophcJd&_nc_ohc=-zpAImNVsXwQ7kNvwF_DJkV&_nc_oc=Adqh7x8dWc_aCX6lzBIx2qSYg9h8OVqePM-58RadkvDu6uwca4APpX7Als5i7PLTlx8&_nc_zt=23&_nc_ht=scontent-poa1-1.xx&edm=AOgd6ZUEAAAA&_nc_gid=ahW2EtzQgkIZYM2mTM5gSA&_nc_tpa=Q5bMBQLsA6LNGqDQ-UZm4JrOYxaT1fZz-0e71cAooPCg5Csdrf2BixQGGnAqUrHv57_z-vqhCMkqXV9Mwg&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=b696e2&_nc_sid=58080a&oh=00_AQE4qq2E0VnYTwmUw6MRccWafqzOT6OtBjBhHb9WbPRXHQ&oe=6A943CF7",
+                  spend: "R$ 17,58",
+                  clicks: "17",
+                  ctr: "1,95%",
+                  cpc: "R$ 1,03"
+                },
+                {
+                  id: "120252557206670154",
+                  name: "TABUAS PERSONALIZADAS - A2 - IMAGEM",
+                  effective_status: "ACTIVE",
+                  copy: "Gravação a laser computadorizada e acabamento premium. Peça seu modelo exclusivo direto pelo WhatsApp.",
+                  headline: "Gravação a Laser Exclusiva",
+                  cta: "Enviar Mensagem",
+                  thumbnail_url: "https://scontent-poa1-1.xx.fbcdn.net/v/t45.1600-4/750057598_4550648461748168_2259513599164376799_n.png?_nc_cat=106&ccb=1-7&_nc_eui2=AeGHtrXTj4A2ZkZbd_QQxlLDk7ASFM7l19STsBIUzuXX1Myg0kb5SzvA9sznNWjM-UyXIOTtXVHUp7wc7QcTZ2PZ&_nc_ohc=_FghNQQ0Lu8Q7kNvwHEComH&_nc_oc=AdrTzTKh7X2Xy_7znVNFrjfXuVUX7swTdVqRwqTPNKV9_yX-vsVgMTqcmegEo8o4FyY&_nc_zt=1&_nc_ht=scontent-poa1-1.xx&edm=AOgd6ZUEAAAA&_nc_gid=ahW2EtzQgkIZYM2mTM5gSA&_nc_tpa=Q5bMBQIgUhwprbaOCUiRQkUWU7KrLzmj_moRtNcLd8nTvvzznwfCnCbjjQhWX-eg7N-b2v9SYfR-BohIQA&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=52f3c4&_nc_sid=58080a&oh=00_AQHOhREY8SFZLGKux-BveNX_iZ0BBMRh34oGQIa2Kx9ZPg&oe=6A9438DA",
+                  spend: "R$ 24,58",
+                  clicks: "26",
+                  ctr: "1,93%",
+                  cpc: "R$ 0,95"
+                }
               ]
             }
           }
         ]
+      },
+      {
+        id: "act_1305549817480553",
+        name: "Prime Cubas Esculpidas",
+        niche: "Marmoraria & Decoração",
+        currency: "BRL",
+        status: 1,
+        targetRoas: "4.5",
+        targetCpa: "20.00",
+        dailyBudget: "150.00",
+        kpi: {
+          roas: "0.00x",
+          revenue: "R$ 0,00",
+          spend: "R$ 0,00",
+          leads: "0 Leads",
+          cpa: "R$ 0,00",
+          nicheBadge: "Conta Conectada"
+        },
+        campaigns: []
+      },
+      {
+        id: "act_740205721180364",
+        name: "Rafael Placido",
+        niche: "Perfil Pessoal & Anúncios",
+        currency: "BRL",
+        status: 1,
+        targetRoas: "4.0",
+        targetCpa: "15.00",
+        dailyBudget: "100.00",
+        kpi: {
+          roas: "0.00x",
+          revenue: "R$ 0,00",
+          spend: "R$ 0,00",
+          leads: "0 Leads",
+          cpa: "R$ 0,00",
+          nicheBadge: "Conta Conectada"
+        },
+        campaigns: []
       },
       {
         id: "act_9928104821",
@@ -1927,118 +1977,6 @@
                 { id: "ad_4", name: "Vídeo Antes e Depois (Dra. Camila)", effective_status: "ACTIVE", copy: "Recupere o contorno facial com procedimentos naturais e sem dor. Agende sua avaliação gratuita pelo WhatsApp!", headline: "Avaliação Gratuita nesta Semana", cta: "Enviar Mensagem" }
               ]
             }
-          },
-          {
-            name: "✨ [IMPLANTES] Captação de Pacientes Invisalign",
-            effective_status: "ACTIVE",
-            objective: "MESSAGES",
-            spend: "R$ 2.096,00",
-            results: "436 Conversas",
-            cpr: "R$ 4,80",
-            roas: "4.2x",
-            clicks: "3.450",
-            ctr: "3.90%",
-            cpc: "R$ 0,60",
-            start_time: "2026-08-05",
-            stop_time: "2026-08-31",
-            adsets: {
-              data: [
-                { name: "Público Local com Interesse em Odontologia", effective_status: "ACTIVE", destination_type: "WHATSAPP", optimization_goal: "CONVERSATIONS" }
-              ]
-            },
-            ads: {
-              data: [
-                { id: "ad_5", name: "Vídeo Escaneamento 3D", effective_status: "ACTIVE", copy: "Alinhe seus dentes com aparelhos transparentes e rápidos. Fale com nosso ortodontista agora!", headline: "Tecnologia 3D sem Moldagens", cta: "Falar no WhatsApp" }
-              ]
-            }
-          }
-        ]
-      },
-      {
-        id: "act_7739102844",
-        name: "Prime Imóveis Alto Padrão",
-        niche: "Imobiliária & Construtora",
-        currency: "BRL",
-        status: 1,
-        targetRoas: "5.0",
-        targetCpa: "35.00",
-        dailyBudget: "350.00",
-        kpi: {
-          roas: "6.10x",
-          revenue: "R$ 51.000,00",
-          spend: "R$ 8.356,50",
-          leads: "310 Cadastros",
-          cpa: "R$ 26,95",
-          nicheBadge: "Leads Qualificados"
-        },
-        campaigns: [
-          {
-            name: "🏢 [LANÇAMENTO] Residencial Sky View Jardins",
-            effective_status: "ACTIVE",
-            objective: "LEAD_GENERATION",
-            spend: "R$ 8.356,50",
-            results: "310 Cadastros",
-            cpr: "R$ 26,95",
-            roas: "6.1x",
-            clicks: "4.920",
-            ctr: "2.85%",
-            cpc: "R$ 1,70",
-            start_time: "2026-08-01",
-            stop_time: "2026-08-31",
-            adsets: {
-              data: [
-                { name: "Investidores & Bairros Nobres SP", effective_status: "ACTIVE", destination_type: "FORM", optimization_goal: "LEAD" }
-              ]
-            },
-            ads: {
-              data: [
-                { id: "ad_6", name: "Tour Virtual Penthouse 240m²", effective_status: "ACTIVE", copy: "Viva a 3 minutos do Parque com vista panorâmica exclusiva. Cadastre-se para receber a tabela de pré-lançamento.", headline: "Apartamentos de 3 a 4 Suítes", cta: "Cadastre-se" }
-              ]
-            }
-          }
-        ]
-      },
-      {
-        id: "act_4482910471",
-        name: "Alpha Cursos Online (Infoproduto)",
-        niche: "Educação & Infoprodutos",
-        currency: "BRL",
-        status: 1,
-        targetRoas: "3.8",
-        targetCpa: "8.00",
-        dailyBudget: "300.00",
-        kpi: {
-          roas: "4.05x",
-          revenue: "R$ 30.300,00",
-          spend: "R$ 7.500,00",
-          leads: "2.140 Alunos",
-          cpa: "R$ 3,50",
-          nicheBadge: "Inscrições / Leads"
-        },
-        campaigns: [
-          {
-            name: "🎓 [MASTERCLASS] Captação para Evento Gratuito",
-            effective_status: "ACTIVE",
-            objective: "LEAD_GENERATION",
-            spend: "R$ 7.500,00",
-            results: "2.140 Inscrições",
-            cpr: "R$ 3,50",
-            roas: "4.05x",
-            clicks: "16.800",
-            ctr: "5.10%",
-            cpc: "R$ 0,44",
-            start_time: "2026-08-01",
-            stop_time: "2026-08-31",
-            adsets: {
-              data: [
-                { name: "Interesse em Programação, IA & Negócios", effective_status: "ACTIVE", destination_type: "FORM", optimization_goal: "LEAD" }
-              ]
-            },
-            ads: {
-              data: [
-                { id: "ad_7", name: "Vídeo Convite Direto (Mentor)", effective_status: "ACTIVE", copy: "Em 3 aulas práticas você vai aprender como construir seus próprios agentes de Inteligência Artificial. Garanta sua vaga gratuita!", headline: "Masterclass Gratuita de IA", cta: "Garantir Vaga" }
-              ]
-            }
           }
         ]
       }
@@ -2049,10 +1987,13 @@
       const stored = localStorage.getItem('publify_clients');
       if (stored) {
         try {
-          return JSON.parse(stored);
-        } catch (e) {
-          return DEFAULT_CLIENTS;
-        }
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            // Guarantee R.P Wood real account exists
+            const hasRp = parsed.some(c => c.id === 'act_2146995242526586');
+            if (hasRp) return parsed;
+          }
+        } catch (e) {}
       }
       return DEFAULT_CLIENTS;
     }
@@ -2062,6 +2003,59 @@
     }
 
     let clients = getStoredClients();
+
+    // Live Sync with Meta API
+    async function syncWithMetaApi(showNotification = false) {
+      const syncBtn = document.getElementById('btn-sync-meta');
+      const syncLabel = document.getElementById('sync-btn-label');
+      
+      if (syncLabel) syncLabel.textContent = 'Sincronizando...';
+
+      try {
+        const response = await fetch('/api/data');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        
+        if (data.accounts && Array.isArray(data.accounts) && data.accounts.length > 0) {
+          // Merge API accounts into clients list
+          const metaAccounts = data.accounts;
+          const merged = [...metaAccounts];
+
+          // Add any custom agency clients that aren't from Meta
+          clients.forEach(c => {
+            if (!metaAccounts.some(ma => ma.id === c.id)) {
+              merged.push(c);
+            }
+          });
+
+          clients = merged;
+          saveStoredClients(clients);
+          renderDashboard();
+
+          if (syncLabel) syncLabel.textContent = 'Sincronizado ✓';
+          if (showNotification) {
+            alert(`✅ Meta API Sincronizada!\n${metaAccounts.length} contas de anúncios atualizadas com métricas reais em tempo real.`);
+          }
+        } else {
+          if (syncLabel) syncLabel.textContent = 'Sincronizar Meta Ads';
+          if (showNotification) {
+            alert('Não foi possível obter dados da Meta API. Verifique a chave em .env');
+          }
+        }
+      } catch (err) {
+        console.warn('Sync notice:', err.message);
+        if (syncLabel) syncLabel.textContent = 'Sincronizar Meta Ads';
+        if (showNotification) {
+          alert('Conexão com a API Meta: ' + err.message);
+        }
+      }
+
+      setTimeout(() => {
+        if (syncLabel) syncLabel.textContent = 'Sincronizar Meta Ads';
+      }, 3000);
+    }
 
     // Calculate Agency Multi-Client Totals
     function updateAgencyTotals() {
@@ -2082,7 +2076,7 @@
       document.getElementById('agency-total-spend').textContent = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalSpend);
       document.getElementById('agency-total-revenue').textContent = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalRevenue);
       document.getElementById('agency-avg-roas').textContent = avgRoas;
-      document.getElementById('agency-client-count').textContent = `${clients.length} Ativos`;
+      document.getElementById('agency-client-count').textContent = `${clients.length} Conectados`;
     }
 
     // Switch Active Client
@@ -2101,7 +2095,7 @@
         closeClientPortfolioModal();
         loading.style.opacity = '0';
         setTimeout(() => { loading.style.display = 'none'; }, 300);
-      }, 350);
+      }, 300);
     }
 
     // Render Dashboard for active client
@@ -2138,7 +2132,8 @@
       const tbody = document.getElementById('campaigns-tbody');
       tbody.innerHTML = '';
 
-      const activeCamps = client.campaigns.filter(c => c.effective_status === 'ACTIVE');
+      const camps = client.campaigns || [];
+      const activeCamps = camps.filter(c => c.effective_status === 'ACTIVE' || c.status === 'ACTIVE');
       document.getElementById('campaign-badge').textContent = `${activeCamps.length} Ativa(s)`;
 
       const adsetsList = document.getElementById('adsets-list');
@@ -2147,81 +2142,93 @@
       const adsList = document.getElementById('ads-list');
       adsList.innerHTML = '';
 
-      client.campaigns.forEach((camp, cIndex) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>
-            <div class="camp-name-cell">
-              <span class="camp-title">${camp.name}</span>
-              <span class="camp-subtitle">${camp.start_time} até ${camp.stop_time} • ${camp.objective}</span>
-            </div>
-          </td>
-          <td>
-            <span class="status-badge status-active">
-              <span class="dot-indicator"></span>
-              Ativo
-            </span>
-          </td>
-          <td><strong>${camp.spend}</strong></td>
-          <td style="color:var(--brand-accent); font-weight:700;">${camp.results}</td>
-          <td style="color:var(--color-amber); font-weight:700;">${camp.cpr}</td>
-          <td style="color:var(--color-emerald); font-weight:800;">${camp.roas}</td>
-          <td>${camp.clicks}</td>
-          <td>${camp.ctr}</td>
-          <td>${camp.cpc}</td>
-          <td>
-            <button class="btn-preview-ad" onclick="openPreviewForCampaign(${cIndex})">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-              Ver Mockup
-            </button>
-          </td>
+      if (camps.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="10" style="text-align:center; padding: 2rem; color:var(--text-muted);">
+              Nenhuma campanha ativa encontrada para esta conta no momento.
+            </td>
+          </tr>
         `;
-        tbody.appendChild(tr);
-
-        // Adsets
-        if (camp.adsets && camp.adsets.data) {
-          camp.adsets.data.forEach(adset => {
-            const item = document.createElement('div');
-            item.className = 'detail-item';
-            item.innerHTML = `
-              <div class="item-meta">
-                <span class="item-title">${adset.name}</span>
-                <span class="item-subtitle">Destino: <strong>${adset.destination_type}</strong> • Otimização: <strong>${adset.optimization_goal}</strong></span>
+        adsetsList.innerHTML = `<div style="text-align:center; padding:1rem; color:var(--text-muted); font-size:0.85rem;">Nenhum conjunto ativo.</div>`;
+        adsList.innerHTML = `<div style="text-align:center; padding:1rem; color:var(--text-muted); font-size:0.85rem;">Nenhum anúncio ativo.</div>`;
+      } else {
+        camps.forEach((camp, cIndex) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>
+              <div class="camp-name-cell">
+                <span class="camp-title">${camp.name}</span>
+                <span class="camp-subtitle">${camp.start_time} até ${camp.stop_time} • ${camp.objective}</span>
               </div>
+            </td>
+            <td>
               <span class="status-badge status-active">
                 <span class="dot-indicator"></span>
                 Ativo
               </span>
-            `;
-            adsetsList.appendChild(item);
-          });
-        }
+            </td>
+            <td><strong>${camp.spend}</strong></td>
+            <td style="color:var(--brand-accent); font-weight:700;">${camp.results}</td>
+            <td style="color:var(--color-amber); font-weight:700;">${camp.cpr}</td>
+            <td style="color:var(--color-emerald); font-weight:800;">${camp.roas}</td>
+            <td>${camp.clicks}</td>
+            <td>${camp.ctr}</td>
+            <td>${camp.cpc}</td>
+            <td>
+              <button class="btn-preview-ad" onclick="openPreviewForCampaign(${cIndex})">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                Ver Mockup
+              </button>
+            </td>
+          `;
+          tbody.appendChild(tr);
 
-        // Ads
-        if (camp.ads && camp.ads.data) {
-          camp.ads.data.forEach((ad, aIndex) => {
-            const item = document.createElement('div');
-            item.className = 'detail-item';
-            item.innerHTML = `
-              <div class="item-meta">
-                <span class="item-title">${ad.name}</span>
-                <span class="item-subtitle">Headline: "${ad.headline}"</span>
-              </div>
-              <div style="display:flex; align-items:center; gap:8px;">
-                <button class="btn-preview-ad" onclick="openPreviewForAd(${cIndex}, ${aIndex})">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/></svg>
-                  Mockup Feed
-                </button>
+          // Adsets
+          if (camp.adsets && camp.adsets.data) {
+            camp.adsets.data.forEach(adset => {
+              const item = document.createElement('div');
+              item.className = 'detail-item';
+              item.innerHTML = `
+                <div class="item-meta">
+                  <span class="item-title">${adset.name}</span>
+                  <span class="item-subtitle">Destino: <strong>${adset.destination_type}</strong> • Otimização: <strong>${adset.optimization_goal}</strong></span>
+                </div>
                 <span class="status-badge status-active">
                   <span class="dot-indicator"></span>
                   Ativo
                 </span>
-              </div>
-            `;
-            adsList.appendChild(item);
-          });
-        }
-      });
+              `;
+              adsetsList.appendChild(item);
+            });
+          }
+
+          // Ads
+          if (camp.ads && camp.ads.data) {
+            camp.ads.data.forEach((ad, aIndex) => {
+              const item = document.createElement('div');
+              item.className = 'detail-item';
+              item.innerHTML = `
+                <div class="item-meta">
+                  <span class="item-title">${ad.name}</span>
+                  <span class="item-subtitle">Headline: "${ad.headline || ad.name}" • Gasto: ${ad.spend || 'R$ 0,00'}</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <button class="btn-preview-ad" onclick="openPreviewForAd(${cIndex}, ${aIndex})">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/></svg>
+                    Mockup Feed
+                  </button>
+                  <span class="status-badge status-active">
+                    <span class="dot-indicator"></span>
+                    Ativo
+                  </span>
+                </div>
+              `;
+              adsList.appendChild(item);
+            });
+          }
+        });
+      }
 
       updateAgencyTotals();
     }
@@ -2252,8 +2259,8 @@
               <span class="kpi-mini-val" style="color:var(--color-emerald);">${c.kpi ? c.kpi.roas : '4.5x'}</span>
             </div>
             <div class="kpi-mini-stat">
-              <span class="kpi-mini-label">Faturamento</span>
-              <span class="kpi-mini-val">${c.kpi ? c.kpi.revenue : 'R$ 0,00'}</span>
+              <span class="kpi-mini-label">Investimento</span>
+              <span class="kpi-mini-val">${c.kpi ? c.kpi.spend : 'R$ 0,00'}</span>
             </div>
             <button class="btn-action ${idx === activeClientIndex ? 'btn-primary' : ''}" onclick="selectActiveClient(${idx})" style="font-size:0.8rem; padding:0.5rem 0.9rem;">
               ${idx === activeClientIndex ? 'Visualizando ✓' : 'Acessar Painel →'}
@@ -2378,12 +2385,12 @@
     }
 
     function fillDemoWizardData() {
-      document.getElementById('input-token').value = 'EAAG_DEMO_PUBLIFY_TOKEN_ACTIVE_2026';
+      document.getElementById('input-token').value = 'EAAS1Jg3e...';
       document.getElementById('input-account-id').value = clients[activeClientIndex].id;
       document.getElementById('input-account-name').value = clients[activeClientIndex].name;
-      document.getElementById('input-target-roas').value = clients[activeClientIndex].targetRoas || '4.5';
-      document.getElementById('input-max-cpa').value = clients[activeClientIndex].targetCpa || '12.00';
-      document.getElementById('input-daily-budget').value = clients[activeClientIndex].dailyBudget || '450.00';
+      document.getElementById('input-target-roas').value = clients[activeClientIndex].targetRoas || '4.8';
+      document.getElementById('input-max-cpa').value = clients[activeClientIndex].targetCpa || '3.00';
+      document.getElementById('input-daily-budget').value = clients[activeClientIndex].dailyBudget || '16.00';
     }
 
     function saveWizardConfig() {
@@ -2415,7 +2422,15 @@
         document.getElementById('mockup-page-name').textContent = client.name + ' Oficial';
         document.getElementById('mockup-headline').textContent = camp.name;
         document.getElementById('mockup-copy-text').textContent = 'Anúncio oficial da campanha ' + camp.name;
-        document.getElementById('mockup-cta-btn').textContent = 'Saiba Mais';
+        document.getElementById('mockup-cta-btn').textContent = 'Enviar Mensagem';
+        
+        const mediaBox = document.getElementById('mockup-media-box');
+        mediaBox.innerHTML = `
+          <div class="ad-media-placeholder">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#0e74f4" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+            <span id="mockup-media-label" style="font-size:0.85rem; font-weight:600; color:#cbd5e1;">Criativo da Campanha</span>
+          </div>
+        `;
         openPreviewModal();
       }
     }
@@ -2429,8 +2444,19 @@
       document.getElementById('mockup-page-name').textContent = client.name + ' Oficial';
       document.getElementById('mockup-copy-text').textContent = ad.copy || 'Aproveite nossa condição exclusiva!';
       document.getElementById('mockup-headline').textContent = ad.headline || ad.name;
-      document.getElementById('mockup-cta-btn').textContent = ad.cta || 'Comprar Agora';
-      document.getElementById('mockup-media-label').textContent = `Criativo: ${ad.name}`;
+      document.getElementById('mockup-cta-btn').textContent = ad.cta || 'Enviar Mensagem';
+      
+      const mediaBox = document.getElementById('mockup-media-box');
+      if (ad.thumbnail_url) {
+        mediaBox.innerHTML = `<img src="${ad.thumbnail_url}" style="width:100%; height:100%; object-fit:cover; border-radius:4px;" alt="${ad.name}" />`;
+      } else {
+        mediaBox.innerHTML = `
+          <div class="ad-media-placeholder">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#0e74f4" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+            <span id="mockup-media-label" style="font-size:0.85rem; font-weight:600; color:#cbd5e1;">Criativo: ${ad.name}</span>
+          </div>
+        `;
+      }
       
       openPreviewModal();
     }
@@ -2440,7 +2466,7 @@
       document.getElementById('btn-mode-demo').classList.toggle('active', mode === 'demo');
       document.getElementById('btn-mode-live').classList.toggle('active', mode === 'live');
       if (mode === 'live') {
-        alert('Tentando conectar ao proxy local (localhost:3000)...\nCaso o backend esteja desligado, o sistema manterá o modo de visualização.');
+        syncWithMetaApi(true);
       }
     }
 
@@ -2448,6 +2474,8 @@
     window.addEventListener('DOMContentLoaded', () => {
       try {
         renderDashboard();
+        // Auto sync with local proxy or live api
+        syncWithMetaApi(false);
       } catch (err) {
         console.error('Erro ao renderizar dashboard:', err);
       }
