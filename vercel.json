@@ -1,9 +1,3 @@
 {
-  "cleanUrls": true,
-  "rewrites": [
-    {
-      "source": "/api/data",
-      "destination": "/api/data.js"
-    }
-  ]
+  "cleanUrls": true
 }
