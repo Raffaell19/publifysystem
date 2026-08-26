@@ -2389,7 +2389,7 @@
     // WIZARD CONTROLS
     function openWizardModal(step = 1) {
       document.getElementById('wizard-modal').style.display = 'flex';
-      const storedToken = localStorage.getItem('meta_user_token') || '';
+      const storedToken = localStorage.getItem('meta_user_token') || 'EAAS1Jg3e8DkBSRQFr9cnSFlCZBYW8ShFJ1amQ1CQmf2jPAnHf2xUQQJROvZA6ftEkTjpqGNpYVUs0jEt0NBJ2GZBlBn2216EqWMbFkwukRsb0IeATZC5plWM6CLshZCSpZAEtpdaGCDtZAs9RQb8owGDsXdAZBAMw6cGYzhKikimrx8Vw31fjItUDq30ZA2u8';
       const client = clients[activeClientIndex] || clients[0];
       
       const tokenInput = document.getElementById('input-token');
@@ -2439,12 +2439,14 @@
 
     function fillDemoWizardData() {
       const client = clients[activeClientIndex] || clients[0];
+      const tokenInput = document.getElementById('input-token');
       const accId = document.getElementById('input-account-id');
       const accName = document.getElementById('input-account-name');
       const targetRoas = document.getElementById('input-target-roas');
       const targetCpa = document.getElementById('input-max-cpa');
       const dailyBudget = document.getElementById('input-daily-budget');
 
+      if (tokenInput) tokenInput.value = 'EAAS1Jg3e8DkBSRQFr9cnSFlCZBYW8ShFJ1amQ1CQmf2jPAnHf2xUQQJROvZA6ftEkTjpqGNpYVUs0jEt0NBJ2GZBlBn2216EqWMbFkwukRsb0IeATZC5plWM6CLshZCSpZAEtpdaGCDtZAs9RQb8owGDsXdAZBAMw6cGYzhKikimrx8Vw31fjItUDq30ZA2u8';
       if (accId) accId.value = (client && client.id) ? client.id : 'act_2146995242526586';
       if (accName) accName.value = (client && client.name) ? client.name : 'R.P Wood Personalizados';
       if (targetRoas) targetRoas.value = (client && client.targetRoas) ? client.targetRoas : '4.8';
@@ -2558,6 +2560,9 @@
     // Initialize
     window.addEventListener('DOMContentLoaded', () => {
       try {
+        if (!localStorage.getItem('meta_user_token')) {
+          localStorage.setItem('meta_user_token', 'EAAS1Jg3e8DkBSRQFr9cnSFlCZBYW8ShFJ1amQ1CQmf2jPAnHf2xUQQJROvZA6ftEkTjpqGNpYVUs0jEt0NBJ2GZBlBn2216EqWMbFkwukRsb0IeATZC5plWM6CLshZCSpZAEtpdaGCDtZAs9RQb8owGDsXdAZBAMw6cGYzhKikimrx8Vw31fjItUDq30ZA2u8');
+        }
         renderDashboard();
         // Auto sync with local proxy or live api
         syncWithMetaApi(false);
