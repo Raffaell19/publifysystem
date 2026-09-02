@@ -1267,6 +1267,9 @@
     }
 
     .toast-item.info {
+      border-left: 4px solid var(--brand-primary);
+    }
+
     /* ==========================================================================
        AI OPTIMIZATION HUB & AUTOPILOT STYLES
        ========================================================================== */
@@ -2003,9 +2006,9 @@
         <!-- Health Score Widget -->
         <div class="opt-health-card">
           <div class="score-circle-wrapper">
-            <svg class="score-circle-svg" viewBox="0 0 100 100">
-              <circle class="score-circle-bg" cx="50" cy="50" r="42" />
-              <circle id="opt-score-circle" class="score-circle-progress" cx="50" cy="50" r="42" />
+            <svg class="score-circle-svg" viewBox="0 0 100 100" style="width:110px; height:110px;">
+              <circle class="score-circle-bg" cx="50" cy="50" r="42" fill="none" stroke="rgba(255, 255, 255, 0.08)" stroke-width="8" />
+              <circle id="opt-score-circle" class="score-circle-progress" cx="50" cy="50" r="42" fill="none" stroke="var(--color-emerald)" stroke-width="8" />
             </svg>
             <div id="opt-score-val" class="score-number-inside">92</div>
           </div>
