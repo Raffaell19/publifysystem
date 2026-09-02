@@ -6,7 +6,14 @@
   "scripts": {
     "start": "node server.js"
   },
-  "keywords": ["meta-ads", "saas", "publify"],
+  "keywords": [
+    "meta-ads",
+    "saas",
+    "publify"
+  ],
   "author": "Raffaell19",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.112.4"
+  }
 }
