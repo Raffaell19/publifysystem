@@ -1,7 +1,17 @@
 # 👤 Perfil do Cliente: Gauchinho de Deus
 
 > **Status da Conta:** 🟢 Ativa & Destravada  
+> **Segmento:** Marketing Político / Mobilização Cristã & Valores  
+> **Geolocalização:** Estado do Rio Grande do Sul (RS)  
 > **Última Atualização:** Setembro / 2026
+
+---
+
+## 🎯 Missão & Meta Principal
+- **Meta Eleitoral:** Conquistar no mínimo **40.000 votos** em todo o estado do Rio Grande do Sul.
+- **Público-Alvo:** Cristãos (Evangélicos, Católicos e Conservadores) que compartilham dos mesmos valores, fé, defesa da família e princípios que o Gauchinho de Deus.
+- **Faixa Etária:** **16 a 65+ anos** (Alcançando jovens eleitores a partir dos 16 anos até a melhor idade).
+- **Alcance Geográfico:** 100% focado no **Rio Grande do Sul (RS)** (Cidades-polo, interior e região metropolitana).
 
 ---
 
@@ -9,27 +19,16 @@
 
 | Campo | Valor / Identificador |
 | :--- | :--- |
-| **Nome da Conta de Anúncios** | `Gauchinho De Deus Oliveira` |
-| **ID da Conta (Graph API)** | `act_101657350274220` |
-| **Account ID** | `101657350274220` |
+| **Nome da Conta** | `Gauchinho De Deus Oliveira` |
+| **ID da Conta** | `act_101657350274220` |
 | **Status no Facebook** | `account_status: 1` (Ativo / Regular) |
-| **Moeda da Conta** | `BRL (R$)` |
 | **Saldo Disponível (Pré-Pago)** | **R$ 1.707,43** |
-| **Limite de Gastos (`spend_cap`)** | **Resetado para R$ 0,00 gasto** (Liberado para veiculação) |
+| **Limite de Gastos (`spend_cap`)** | **R$ 0,00 gasto** (Liberado para veiculação) |
 
 ---
 
-## 🎯 Metas & Parâmetros de Performance
-
-- **Objetivo Principal:** *(A definir: Vendas diretas / WhatsApp / Leads)*
-- **CPA Alvo (Custo por Aquisição Máximo):** `R$ --`
-- **ROAS Desejado:** `--x`
-- **Orçamento Diário Recomendado:** `R$ 50,00 a R$ 100,00 / dia`
-
----
-
-## 📂 Organização das Pastas do Cliente
-
-1. **[`./estrategia/`](./estrategia/):** Mapeamento de funil, públicos segmentados (Interesses, Lookalikes e Abertos) e distribuição de verba.
-2. **[`./criativos/`](./criativos/):** Textos de anúncios (Copies), roteiros para vídeos (Reels/Stories) e ganchos de alta conversão.
-3. **[`./relatorios/`](./relatorios/):** Diagnósticos em tempo real, relatórios executivos para envio no WhatsApp/PDF e logs de otimização diária.
+## 🏛️ Pilares de Comunicação
+1. **Fé & Valores Cristãos:** Princípios inegociáveis, ética, família e respeito a Deus.
+2. **Identidade Gaúcha & Tradição:** Amor pelo Rio Grande do Sul, honra às raízes e ao povo gaúcho.
+3. **Ação & Presença:** Propostas práticas, posicionamento firme e representatividade real.
+4. **Comunidade & Mobilização:** Construção de base de apoio ativa no WhatsApp e redes sociais.
