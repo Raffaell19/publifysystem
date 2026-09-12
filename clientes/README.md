@@ -8,7 +8,14 @@ Este diretório armazena o espaço de trabalho individual e isolado de cada clie
 
 | Cliente | ID da Conta de Anúncios | Status | Pasta de Trabalho |
 | :--- | :--- | :---: | :--- |
+| **Connect Digital** | `act_CONNECT_DIGITAL_OFICIAL` | 🟢 Ativo | [`./Connect Digital`](./Connect%20Digital) |
 | **Gauchinho de Deus** | `act_101657350274220` | 🟢 Ativo | [`./Gauchinho de Deus`](./Gauchinho%20de%20Deus) |
+
+---
+
+## 📖 Procedimento Operacional Padrão (SOP)
+Para adicionar novos clientes sem bloqueios de permissão, limites de conta ou erros de autorização:
+👉 **Consulte o [Manual de Onboarding e Conexão de Clientes na BM](./GUIA_ONBOARDING_E_CONEXAO_BM.md)**
 
 ---
 

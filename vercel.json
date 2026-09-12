@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "index.html",
+      "src": "*.html",
       "use": "@vercel/static"
     },
     {
@@ -10,30 +10,47 @@
       "use": "@vercel/static"
     },
     {
-      "src": "api/data.js",
-      "use": "@vercel/node"
+      "src": "public/**",
+      "use": "@vercel/static"
     },
     {
-      "src": "api/clients.js",
+      "src": "api/*.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
-      "src": "/api/data",
-      "dest": "/api/data.js"
+      "src": "/api/gauchinho",
+      "dest": "/api/gauchinho.js"
     },
     {
       "src": "/api/clients",
       "dest": "/api/clients.js"
     },
     {
+      "src": "/api/data",
+      "dest": "/api/data.js"
+    },
+    {
+      "src": "/cliente",
+      "dest": "/cliente.html"
+    },
+    {
+      "src": "/dashboard",
+      "dest": "/dashboard.html"
+    },
+    {
       "src": "/logo.png",
       "dest": "/logo.png"
     },
     {
-      "src": "/(.*)",
+      "src": "/public/(.*)",
+      "dest": "/public/$1"
+    },
+    {
+      "src": "/",
       "dest": "/index.html"
     }
   ]
 }
+

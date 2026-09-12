@@ -5,6 +5,7 @@ const https = require('https');
 
 const PORT = 3000;
 const handleClientsApi = require('./api/clients');
+const handleGauchinhoMetrics = require('./api/gauchinho');
 
 // Read .env file helper
 function getMetaToken() {
@@ -245,12 +246,19 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  if (req.url.startsWith('/api/gauchinho')) {
+    handleGauchinhoMetrics(req, res);
+    return;
+  }
+
   if (req.url.startsWith('/api/data')) {
     handleApiData(req, res);
     return;
   }
 
   let reqPath = req.url.split('?')[0];
+  if (reqPath === '/dashboard') reqPath = '/dashboard.html';
+  if (reqPath === '/cliente') reqPath = '/cliente.html';
   let filePath = path.join(__dirname, reqPath === '/' ? 'index.html' : reqPath);
   
   if (!filePath.startsWith(__dirname)) {
@@ -290,6 +298,7 @@ const server = http.createServer((req, res) => {
   });
 });
 
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`Publify Server running at http://localhost:${PORT}/`);
 });
+

@@ -1,0 +1,38 @@
+{
+  "default_schedule_slots": ["11:00", "18:30"],
+  "clients": {
+    "connect_digital": {
+      "name": "Connect Digital",
+      "folder": "criativos_fila/connect_digital",
+      "default_platforms": ["instagram"],
+      "schedule_slots": ["11:00", "18:30"],
+      "brand_tone": "Profissional, focado em ROI, escala B2B, marketing de alta performance e tecnologia.",
+      "default_hashtags": "#MarketingDigital #TráfegoPago #MetaAds #EscalaB2B #ConnectDigital",
+      "instagram_account_id": "17841460735829947",
+      "instagram_username": "@connect.digittall",
+      "facebook_page_id": ""
+    },
+    "gauchinho_de_deus": {
+      "name": "Gauchinho de Deus",
+      "folder": "criativos_fila/gauchinho_de_deus",
+      "default_platforms": ["instagram", "facebook_page"],
+      "schedule_slots": ["11:00", "18:30"],
+      "brand_tone": "Inspirador, focado em fé, valores cristãos, família e tradição gaúcha no Rio Grande do Sul.",
+      "default_hashtags": "#GauchinhoDeDeus #ValoresCristãos #RioGrandeDoSul #FéEFamília",
+      "instagram_account_id": "17841405633389808",
+      "instagram_username": "@gauchinhodedeus",
+      "facebook_page_id": "355824288190216"
+    },
+    "rp_wood": {
+      "name": "R.P Wood Personalizados",
+      "folder": "criativos_fila/rp_wood",
+      "default_platforms": ["instagram", "facebook_page"],
+      "schedule_slots": ["11:00", "18:30"],
+      "brand_tone": "Artesanal, tábuas personalizadas, qualidade e e-commerce de presentes.",
+      "default_hashtags": "#RPWood #TábuaPersonalizada #Churrasco #PresenteEspecial",
+      "instagram_account_id": "17841453749433109",
+      "instagram_username": "@rpwoodpersonalizados",
+      "facebook_page_id": "1087612627777055"
+    }
+  }
+}

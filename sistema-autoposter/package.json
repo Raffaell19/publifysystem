@@ -1,0 +1,26 @@
+{
+  "name": "sistema-autoposter",
+  "version": "1.0.0",
+  "description": "Sistema Autônomo de Publicação Multi-Redes Sociais com Aprovação Humana via Telegram Bot / WhatsApp",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "start:now": "node index.js --now",
+    "dev": "node --watch index.js",
+    "test": "node --test"
+  },
+  "keywords": [
+    "social-media",
+    "automation",
+    "telegram-bot",
+    "instagram-api",
+    "facebook-api",
+    "gemini-ai"
+  ],
+  "author": "Connect Digital",
+  "license": "MIT",
+  "dependencies": {
+    "localtunnel": "^2.0.2",
+    "sharp": "^0.35.4"
+  }
+}

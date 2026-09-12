@@ -1,0 +1,10 @@
+.env*
+node_modules
+.agents
+*.mp4
+*.exe
+logs
+scratch
+PORTAL_TRANSPARENCIA_LINK.txt
+*.bat
+*.vbs
