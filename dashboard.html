@@ -662,27 +662,67 @@
         font-size: 18px;
       }
     }
+    .client-switcher-bar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .client-tab-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .client-tab-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+    .client-tab-btn.active {
+      background: rgba(16, 185, 129, 0.2);
+      border-color: rgba(16, 185, 129, 0.6);
+      color: #34d399;
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+    }
   </style>
 </head>
 <body>
 
   <div class="container">
 
+    <!-- Client Switcher Tabs -->
+    <div class="client-switcher-bar">
+      <button class="client-tab-btn active" id="btnRpwood" onclick="switchClient('rpwood')">
+        <span>🌲</span> R.P Wood Personalizados
+      </button>
+      <button class="client-tab-btn" id="btnGauchinho" onclick="switchClient('gauchinho')">
+        <span>🇧🇷</span> Gauchinho de Deus
+      </button>
+    </div>
+
     <!-- Top Header -->
     <header class="header">
       <div class="client-identity">
-        <div class="client-avatar">✝️</div>
+        <div class="client-avatar" id="clientAvatar">🌲</div>
         <div class="client-title">
           <h1>
-            <span id="clientName">Gauchinho de Deus</span>
-            <span class="client-badge" id="clientRole">Deputado Federal 2266</span>
+            <span id="clientName">R.P Wood Personalizados</span>
+            <span class="client-badge" id="clientRole">Placas Rústicas Nobres</span>
           </h1>
           <div class="client-subtitle">
-            <span>🇧🇷 Rio Grande do Sul (RS)</span>
+            <span id="clientState">🌲 Serra Gaúcha (RS)</span>
             <span>•</span>
-            <span id="accountIdBadge">act_101657350274220</span>
+            <span id="accountIdBadge">act_2146995242526586</span>
             <span>•</span>
-            <span style="color: var(--emerald); font-weight: 600;">🟢 Categoria Política Verificada</span>
+            <span style="color: var(--emerald); font-weight: 600;" id="clientStatusBadge">🟢 Conta Ativa & Regular</span>
           </div>
         </div>
       </div>
@@ -721,7 +761,7 @@
     <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 12px; padding: 12px 18px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
       <div style="display: flex; align-items: center; gap: 10px; font-size: 13px;">
         <span style="font-size: 16px;">🌐</span>
-        <span><strong>Link Público para o WhatsApp do Candidato:</strong> <a id="clientLinkAnchor" href="https://memories-received-consistency-sperm.trycloudflare.com/cliente" target="_blank" style="color: #34d399; text-decoration: underline; font-weight: 600;">https://memories-received-consistency-sperm.trycloudflare.com/cliente</a></span>
+        <span><strong>Link Público para o WhatsApp do Candidato:</strong> <a id="clientLinkAnchor" href="https://scholarship-typing-browsers-simple.trycloudflare.com/cliente" target="_blank" style="color: #34d399; text-decoration: underline; font-weight: 600;">https://scholarship-typing-browsers-simple.trycloudflare.com/cliente</a></span>
       </div>
       <button class="btn btn-secondary" onclick="copyClientLink()" style="padding: 6px 14px; font-size: 12px;">
         📋 Copiar Link Público
@@ -886,6 +926,25 @@
       }, 1000);
     }
 
+    const urlParams = new URLSearchParams(window.location.search);
+    let currentClient = urlParams.get('client') || 'rpwood';
+
+    function updateTabButtons() {
+      document.querySelectorAll('.client-tab-btn').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById(currentClient === 'gauchinho' ? 'btnGauchinho' : 'btnRpwood');
+      if (activeBtn) activeBtn.classList.add('active');
+    }
+
+    function switchClient(clientKey) {
+      currentClient = clientKey;
+      const url = new URL(window.location);
+      url.searchParams.set('client', clientKey);
+      window.history.replaceState({}, '', url);
+      updateTabButtons();
+      initClientLink();
+      fetchMetrics(true);
+    }
+
     async function fetchMetrics(manual = false) {
       const btn = document.getElementById('btnRefresh');
       if (manual) {
@@ -894,7 +953,8 @@
       }
 
       try {
-        const res = await fetch('/api/gauchinho');
+        updateTabButtons();
+        const res = await fetch(`/api/gauchinho?client=${encodeURIComponent(currentClient)}`);
         const data = await res.json();
 
         if (data.success) {
@@ -916,17 +976,29 @@
     function renderDashboard(data) {
       const { client, overview, ads } = data;
 
+      document.title = `${client.name} | Dashboard Meta Ads`;
+
       // Header
+      const avatar = document.getElementById('clientAvatar');
+      if (avatar) avatar.innerText = client.id === 'rpwood' ? '🌲' : '✝️';
+
       document.getElementById('clientName').innerText = client.name;
       document.getElementById('clientRole').innerText = client.role;
+      const stateEl = document.getElementById('clientState');
+      if (stateEl) stateEl.innerText = client.state;
       document.getElementById('accountIdBadge').innerText = client.accountId;
+      const statusEl = document.getElementById('clientStatusBadge');
+      if (statusEl) statusEl.innerText = `🟢 ${client.accountStatus}`;
 
       // KPIs
       document.getElementById('kpiBalance').innerText = client.balanceFormatted;
-      document.getElementById('kpiDays').innerText = `~${client.estimatedDaysRemaining} dias`;
+      document.getElementById('kpiDays').innerText = client.dailyBudget > 0 ? `~${client.estimatedDaysRemaining} dias` : 'Ativo';
       document.getElementById('kpiReach').innerText = overview.reachFormatted;
       document.getElementById('kpiThruplays').innerText = overview.thruplaysFormatted;
-      document.getElementById('kpiCpv').innerText = `${overview.costPerThruplayFormatted} / ThruPlay`;
+      document.getElementById('kpiCpv').innerText = client.id === 'rpwood' 
+        ? `${overview.cpcFormatted} / Clique` 
+        : `${overview.costPerThruplayFormatted} / ThruPlay`;
+
       document.getElementById('kpiSpend').innerText = overview.spendFormatted;
       document.getElementById('kpiTodaySpend').innerText = overview.todaySpendFormatted;
       document.getElementById('kpiFrequency').innerText = `${overview.frequency}x`;
@@ -974,8 +1046,8 @@
                   <span class="ad-stat-val">${ad.reachFormatted}</span>
                 </div>
                 <div class="ad-stat-item">
-                  <span class="ad-stat-label">ThruPlays</span>
-                  <span class="ad-stat-val">${ad.thruplaysFormatted}</span>
+                  <span class="ad-stat-label">${client.id === 'rpwood' ? 'Cliques' : 'ThruPlays'}</span>
+                  <span class="ad-stat-val">${client.id === 'rpwood' ? ad.clicksFormatted : ad.thruplaysFormatted}</span>
                 </div>
                 <div class="ad-stat-item">
                   <span class="ad-stat-label">Investimento</span>
@@ -1005,10 +1077,8 @@
       let origin = window.location.origin;
       const isLocal = !origin || origin === 'null' || window.location.protocol === 'file:' || 
                       window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-      if (isLocal) {
-        return 'https://memories-received-consistency-sperm.trycloudflare.com/cliente';
-      }
-      return `${origin}/cliente`;
+      const base = isLocal ? 'https://scholarship-typing-browsers-simple.trycloudflare.com/cliente' : `${origin}/cliente`;
+      return `${base}?client=${currentClient}`;
     }
 
     function initClientLink() {

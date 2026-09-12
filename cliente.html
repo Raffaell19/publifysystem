@@ -397,8 +397,37 @@
         font-size: 9px;
       }
       .v-metric-item strong {
-        font-size: 14px;
-      }
+    .client-switcher-bar {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .client-tab-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .client-tab-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+    .client-tab-btn.active {
+      background: rgba(16, 185, 129, 0.2);
+      border-color: rgba(16, 185, 129, 0.6);
+      color: #34d399;
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.25);
     }
   </style>
 </head>
@@ -406,17 +435,26 @@
 
   <div class="container">
 
+    <!-- Client Switcher Tabs -->
+    <div class="client-switcher-bar">
+      <button class="client-tab-btn active" id="btnRpwood" onclick="switchClient('rpwood')">
+        <span>🌲</span> R.P Wood Personalizados
+      </button>
+      <button class="client-tab-btn" id="btnGauchinho" onclick="switchClient('gauchinho')">
+        <span>🇧🇷</span> Gauchinho de Deus
+      </button>
+    </div>
+
     <!-- Hero Header -->
     <div class="hero">
-      <div class="candidate-badge">
-        <span>🇧🇷 Prestação de Contas em Tempo Real</span>
+      <div class="candidate-badge" id="clientBadge">
+        <span id="clientBadgeText">🌲 Desempenho em Tempo Real (Meta Ads)</span>
       </div>
-      <h1 id="cName">Gauchinho de Deus</h1>
-      <p id="cSub">Deputado Federal 2266 • Relatório oficial de alcance, visualizações e investimento da campanha no Rio Grande do Sul.</p>
+      <h1 id="cName">R.P Wood Personalizados</h1>
+      <p id="cSub">Placas Rústicas Entalhadas • Relatório oficial de alcance, anúncios ativos e conversões na Serra Gaúcha.</p>
       
-      <div class="legal-meta">
-        <strong>Propaganda Eleitoral Lei 9.504/97</strong> • CNPJ 68.312.665/0001-74 • 
-        COLIGAÇÃO O RIO GRANDE PODE MAIS: PL, Federação União Progressista (Progressistas, União Brasil), Republicanos, Podemos, Novo e DC.
+      <div class="legal-meta" id="cLegal">
+        Painel Oficial de Transparência & Desempenho Meta Ads • R.P Wood Personalizados
       </div>
     </div>
 
@@ -424,7 +462,7 @@
     <div class="live-sync-bar">
       <div class="live-indicator">
         <span class="live-dot"></span>
-        <span>Métricas Atualizadas em Tempo Real (Meta Ads)</span>
+        <span>Métricas Atualizadas em Tempo Real (Meta Graph API v20.0)</span>
       </div>
       <div>
         Próxima atualização automática em: <strong id="timerSecs" style="color: var(--emerald); font-family: monospace;">02:00</strong>
@@ -433,52 +471,52 @@
 
     <!-- Big Numbers -->
     <div class="numbers-grid">
-      <!-- 1. Eleitores Alcançados -->
+      <!-- 1. Pessoas Alcançadas -->
       <div class="card">
         <div class="card-icon">👥</div>
-        <div class="card-num" id="reachNum">8.584</div>
-        <div class="card-title">Gaúchos Alcançados</div>
-        <div class="card-sub">Pessoas únicas impactadas</div>
+        <div class="card-num" id="reachNum">...</div>
+        <div class="card-title" id="reachTitle">Pessoas Alcançadas</div>
+        <div class="card-sub" id="reachSub">Pessoas únicas impactadas</div>
       </div>
 
-      <!-- 2. Vídeos Assistidos -->
+      <!-- 2. Engajamento / Vídeos -->
       <div class="card">
-        <div class="card-icon">🎬</div>
-        <div class="card-num" id="thruplayNum">1.660</div>
-        <div class="card-title">Vídeos Assistidos</div>
-        <div class="card-sub">Mais de 15 segundos ou completos</div>
+        <div class="card-icon" id="thruplayIcon">🎬</div>
+        <div class="card-num" id="thruplayNum">...</div>
+        <div class="card-title" id="thruplayTitle">Engajamento & Interações</div>
+        <div class="card-sub" id="thruplaySub">Interações diretas geradas</div>
       </div>
 
       <!-- 3. Impressões -->
       <div class="card">
         <div class="card-icon">👁️</div>
-        <div class="card-num" id="impressionsNum">9.392</div>
+        <div class="card-num" id="impressionsNum">...</div>
         <div class="card-title">Exibições no Feed/Stories</div>
-        <div class="card-sub">Frequência média saudável de 1.09x</div>
+        <div class="card-sub" id="freqSub">Frequência média saudável</div>
       </div>
 
       <!-- 4. Saldo em Conta -->
       <div class="card">
         <div class="card-icon">💰</div>
-        <div class="card-num" id="balanceNum">R$ 1.624,01</div>
+        <div class="card-num" id="balanceNum">...</div>
         <div class="card-title">Saldo Disponível</div>
-        <div class="card-sub" id="daysSub">~8 dias de veiculação garantidos</div>
+        <div class="card-sub" id="daysSub">Autonomia de veiculação</div>
       </div>
     </div>
 
-    <!-- Active Videos Section -->
+    <!-- Active Ads Section -->
     <div class="section-title">
-      <span>📹 Vídeos em Veiculação no Rio Grande do Sul</span>
+      <span id="sectionAdsTitle">✨ Anúncios em Veiculação</span>
     </div>
 
     <div class="videos-grid" id="videosContainer">
       <div style="text-align: center; padding: 40px; color: #64748b; grid-column: 1 / -1;">
-        Carregando vídeos em veiculação...
+        Carregando anúncios em veiculação...
       </div>
     </div>
 
-    <div class="footer-note">
-      Painel Oficial de Transparência Eleitoral • Conectado à Meta Graph API v20.0 • Dados sincronizados automaticamente a cada 2 minutos.
+    <div class="footer-note" id="footerNote">
+      Painel Oficial de Transparência • Conectado à Meta Graph API v20.0 • Dados sincronizados automaticamente a cada 2 minutos.
     </div>
 
   </div>
@@ -486,6 +524,24 @@
   <script>
     let countdown = 120;
     let timer = null;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    let currentClient = urlParams.get('client') || 'rpwood';
+
+    function updateTabButtons() {
+      document.querySelectorAll('.client-tab-btn').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById(currentClient === 'gauchinho' ? 'btnGauchinho' : 'btnRpwood');
+      if (activeBtn) activeBtn.classList.add('active');
+    }
+
+    function switchClient(clientKey) {
+      currentClient = clientKey;
+      const url = new URL(window.location);
+      url.searchParams.set('client', clientKey);
+      window.history.replaceState({}, '', url);
+      updateTabButtons();
+      loadData();
+    }
 
     function startTimer() {
       if (timer) clearInterval(timer);
@@ -509,7 +565,8 @@
 
     async function loadData() {
       try {
-        const res = await fetch('/api/gauchinho');
+        updateTabButtons();
+        const res = await fetch(`/api/gauchinho?client=${encodeURIComponent(currentClient)}`);
         const d = await res.json();
         if (d.success) {
           render(d);
@@ -523,20 +580,34 @@
     function render(data) {
       const { client, overview, ads } = data;
 
+      document.title = `${client.name} | Portal de Transparência Meta Ads`;
+      document.getElementById('clientBadgeText').innerText = client.badge || 'Métricas em Tempo Real';
       document.getElementById('cName').innerText = client.name;
+      document.getElementById('cSub').innerText = client.subtitle || client.role;
+      document.getElementById('cLegal').innerText = client.coligacao || '';
+
       document.getElementById('reachNum').innerText = overview.reachFormatted;
       document.getElementById('thruplayNum').innerText = overview.thruplaysFormatted;
+      document.getElementById('thruplayTitle').innerText = client.metric2Label || 'Engajamento & Interações';
+      document.getElementById('thruplaySub').innerText = client.metric2Sub || 'Interações diretas geradas';
+
       document.getElementById('impressionsNum').innerText = overview.impressionsFormatted;
+      document.getElementById('freqSub').innerText = `Frequência média de ${overview.frequency}x`;
+
       document.getElementById('balanceNum').innerText = client.balanceFormatted;
-      document.getElementById('daysSub').innerText = `~${client.estimatedDaysRemaining} dias de autonomia a R$ 200/dia`;
+      document.getElementById('daysSub').innerText = client.dailyBudget > 0
+        ? `~${client.estimatedDaysRemaining} dias de autonomia a ${client.dailyBudgetFormatted}`
+        : 'Saldo disponível em conta';
+
+      document.getElementById('sectionAdsTitle').innerText = client.sectionAdsTitle || '✨ Anúncios em Veiculação';
 
       const container = document.getElementById('videosContainer');
       if (ads && ads.length > 0) {
         container.innerHTML = ads.map(a => `
           <div class="video-card">
             <div class="video-thumb">
-              ${a.thumbnail ? `<img src="${a.thumbnail}" alt="${a.name}" loading="lazy">` : `<div style="padding: 60px 20px; text-align: center; color: #64748b; font-size: 13px;">Vídeo em veiculação</div>`}
-              <div class="video-tag">🟢 No Ar no RS</div>
+              ${a.thumbnail ? `<img src="${a.thumbnail}" alt="${a.name}" loading="lazy">` : `<div style="padding: 60px 20px; text-align: center; color: #64748b; font-size: 13px;">Anúncio em veiculação</div>`}
+              <div class="video-tag">🟢 ${a.status === 'ACTIVE' ? 'Ativo na Meta' : a.status}</div>
             </div>
             <div class="video-info">
               <div class="video-name">${a.name}</div>
@@ -545,17 +616,19 @@
               </div>
               <div class="video-metrics">
                 <div class="v-metric-item">
-                  <small>Eleitores</small>
+                  <small>Alcance</small>
                   <strong>${a.reachFormatted}</strong>
                 </div>
                 <div class="v-metric-item">
-                  <small>Assistiram</small>
-                  <strong style="color: #10b981;">${a.thruplaysFormatted}</strong>
+                  <small>${client.id === 'rpwood' ? 'Cliques / Contatos' : 'Assistiram'}</small>
+                  <strong style="color: #10b981;">${client.id === 'rpwood' ? a.clicksFormatted : a.thruplaysFormatted}</strong>
                 </div>
               </div>
             </div>
           </div>
         `).join('');
+      } else {
+        container.innerHTML = `<div style="text-align: center; padding: 40px; color: #64748b; grid-column: 1 / -1;">Nenhum anúncio encontrado no período.</div>`;
       }
     }
 
